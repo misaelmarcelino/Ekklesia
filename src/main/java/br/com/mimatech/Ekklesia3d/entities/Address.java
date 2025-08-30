@@ -16,14 +16,12 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Member member;
-
     private String street;
     private String number;
     private String complement;
     private String city;
     private String state;
+    @Column(length = 10)
     private String zipCode;
 
 }

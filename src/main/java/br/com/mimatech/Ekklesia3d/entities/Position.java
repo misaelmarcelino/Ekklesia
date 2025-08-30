@@ -10,11 +10,10 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Member member;
-
+    @Column(nullable = false, length = 100)
     private String position;
-    private String description;
 
+    @Column(length = 255)
+    private String description;
 
 }

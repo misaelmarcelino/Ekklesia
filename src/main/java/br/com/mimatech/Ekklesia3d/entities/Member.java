@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "tb_members")
+@Table(name = "tb_members",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_members_email", columnNames = "email")
+        })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,23 +22,32 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, length = 255)
     private String email;
+    @Column(length = 20)
     private String phone;
     private int age;
     private LocalDate dateOfBirth;
     private LocalDate dateOfBaptism;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "fk_members_address"))
     private Address address;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "position_id", foreignKey = @ForeignKey(name = "fk_members_position"))
     private Position position;
 
+    @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private Role role;
 
-    private LocalDate creatAt;
-    private LocalDate updateAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 
 }
