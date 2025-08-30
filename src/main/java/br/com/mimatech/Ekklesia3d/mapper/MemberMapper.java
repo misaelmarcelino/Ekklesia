@@ -1,7 +1,7 @@
-package br.com.mimatech.Ekklesia.mapper;
+package br.com.mimatech.Ekklesia3d.mapper;
 
-import br.com.mimatech.Ekklesia.dto.MemberDto;
-import br.com.mimatech.Ekklesia.entities.Member;
+import br.com.mimatech.Ekklesia3d.dto.MemberDto;
+import br.com.mimatech.Ekklesia3d.entities.Member;
 
 public class MemberMapper {
 

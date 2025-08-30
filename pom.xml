@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.mimatech</groupId>
-	<artifactId>Ekklesia</artifactId>
+	<artifactId>Ekklesia3d</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Ekklesia</name>
 	<description>App de gestão eclesiastica</description>

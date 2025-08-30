@@ -1,6 +1,6 @@
-package br.com.mimatech.Ekklesia.entities;
+package br.com.mimatech.Ekklesia3d.entities;
 
-import br.com.mimatech.Ekklesia.enums.Role;
+import br.com.mimatech.Ekklesia3d.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,8 +1,7 @@
-package br.com.mimatech.Ekklesia.dto;
+package br.com.mimatech.Ekklesia3d.dto;
 
-import br.com.mimatech.Ekklesia.entities.Address;
-import br.com.mimatech.Ekklesia.entities.Position;
-import br.com.mimatech.Ekklesia.enums.Role;
+import br.com.mimatech.Ekklesia3d.entities.Address;
+import br.com.mimatech.Ekklesia3d.entities.Position;
 
 import java.time.LocalDate;
 

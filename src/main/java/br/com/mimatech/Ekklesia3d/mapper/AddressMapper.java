@@ -1,7 +1,7 @@
-package br.com.mimatech.Ekklesia.mapper;
+package br.com.mimatech.Ekklesia3d.mapper;
 
-import br.com.mimatech.Ekklesia.dto.AddressDto;
-import br.com.mimatech.Ekklesia.entities.Address;
+import br.com.mimatech.Ekklesia3d.dto.AddressDto;
+import br.com.mimatech.Ekklesia3d.entities.Address;
 
 public class AddressMapper {
 
