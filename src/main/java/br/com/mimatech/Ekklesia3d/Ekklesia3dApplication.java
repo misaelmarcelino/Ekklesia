@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EkklesiaApplication {
+public class Ekklesia3dApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EkklesiaApplication.class, args);
+		SpringApplication.run(Ekklesia3dApplication.class, args);
 	}
 
 }
