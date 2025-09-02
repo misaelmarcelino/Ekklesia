@@ -1,6 +1,6 @@
-package br.com.mimatech.Ekklesia3d.controller;
+package br.com.mimatech.Ekklesia3d.member.controller;
 
-import br.com.mimatech.Ekklesia3d.config.security.JwtService;
+import br.com.mimatech.Ekklesia3d.security.config.security.JwtService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

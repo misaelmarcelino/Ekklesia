@@ -1,4 +1,4 @@
-package br.com.mimatech.Ekklesia3d.enums;
+package br.com.mimatech.Ekklesia3d.security.enums;
 
 public enum Role {
     ADMIN,

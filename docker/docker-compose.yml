@@ -1,24 +1,25 @@
-version: "3.9"
+version: '3.8'
 services:
   mysql:
-    image: mysql:8.4
-    container_name: mysql8-app
-    restart: unless-stopped
+    image: mysql:8.0
+    container_name: mysql_ekklesia3d
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: Ekklesia3d2025
+      MYSQL_DATABASE: ekklesia3d
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./mysql/conf.d:/etc/mysql/conf.d:ro
-    command: [
-      "--default-authentication-plugin=caching_sha2_password",
-      "--character-set-server=utf8mb4",
-      "--collation-server=utf8mb4_0900_ai_ci"
-    ]
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: Ekklesia3d2025
 
 volumes:
-  mysql_data:
+  db_data:
