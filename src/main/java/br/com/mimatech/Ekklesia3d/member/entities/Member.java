@@ -37,7 +37,7 @@ public class Member implements UserDetails {
     @Column(length = 20)
     private String phone;
 
-    private int age;
+    private Integer age;
     private LocalDate dateOfBirth;
     private LocalDate dateOfBaptism;
 

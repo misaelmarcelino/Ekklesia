@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +40,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
             }
     )
-    @RequestBody(
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Credenciais de login",
             required = true,
             content = @Content(
@@ -83,7 +82,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "400", description = "Dados inválidos")
             }
     )
-    @RequestBody(
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Dados para registro de membro local",
             required = true,
             content = @Content(
@@ -112,7 +111,7 @@ public class AuthController {
                     "description": "Responsável por auxiliar no serviço da igreja"
                   },
                   "password": "strongPassword123",
-                  "role": "USER"
+                  "role": "MEMBER"
                 }
                 """
                             )

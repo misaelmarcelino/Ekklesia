@@ -26,7 +26,15 @@ public class MemberService {
 
     @Transactional
     public MemberDto registerLocal(MemberRegisterDto dto) {
-        Member member = MemberMapper.toMember(dto);
+
+        System.out.println("DEBUG DTO = " + dto);
+
+
+        if (dto.password() == null || dto.password().isBlank()) {
+            throw new IllegalArgumentException("Senha não pode ser nula ou vazia");
+        }
+
+        Member member = MemberMapper.toMemberRegister(dto);
         member.setPassword(passwordEncoder.encode(dto.password()));
         member.setProvider(AuthProvider.LOCAL);
         Member saved = memberRepository.save(member);

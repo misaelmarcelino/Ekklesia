@@ -18,7 +18,7 @@ public record MemberRegisterDto(
         String phone,
 
         @Schema(description = "Idade do membro", example = "28")
-        int age,
+        Integer age,
 
         @Schema(description = "Data de nascimento", example = "1997-05-15")
         LocalDate dateOfBirth,

@@ -3,6 +3,9 @@ package br.com.mimatech.Ekklesia3d.member.mapper;
 import br.com.mimatech.Ekklesia3d.member.dto.MemberDto;
 import br.com.mimatech.Ekklesia3d.member.dto.MemberRegisterDto;
 import br.com.mimatech.Ekklesia3d.member.entities.Member;
+import br.com.mimatech.Ekklesia3d.shared.enums.AuthProvider;
+
+import java.time.LocalDateTime;
 
 public class MemberMapper {
 
@@ -27,7 +30,6 @@ public class MemberMapper {
 
     public static Member toMember(MemberDto dto) {
         Member member = new Member();
-
         member.setId(dto.id());
         member.setName(dto.name());
         member.setEmail(dto.email());
@@ -46,7 +48,7 @@ public class MemberMapper {
         return member;
     }
 
-    public static Member toMember(MemberRegisterDto dto) {
+    public static Member toMemberRegister(MemberRegisterDto dto) {
         Member member = new Member();
         member.setName(dto.name());
         member.setEmail(dto.email());
@@ -58,7 +60,10 @@ public class MemberMapper {
         member.setPosition(dto.position() != null ? PositionMapper.toEntity(dto.position()) : null);
         member.setPassword(dto.password()); // será criptografada no service
         member.setRole(dto.role());
-        member.setProvider(br.com.mimatech.Ekklesia3d.shared.enums.AuthProvider.LOCAL);
+        member.setProvider(AuthProvider.LOCAL);
+        member.setCreatedAt(LocalDateTime.now());
+        member.setUpdatedAt(LocalDateTime.now());
+
         return member;
     }
 }
