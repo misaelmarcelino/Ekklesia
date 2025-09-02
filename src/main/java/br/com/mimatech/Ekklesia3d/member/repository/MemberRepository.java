@@ -1,8 +1,11 @@
-package br.com.mimatech.Ekklesia3d.repository;
+package br.com.mimatech.Ekklesia3d.member.repository;
 
-import br.com.mimatech.Ekklesia3d.entities.Member;
+import br.com.mimatech.Ekklesia3d.member.entities.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+import java.util.Optional;
 
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    Optional<Member> findByEmail(String email);
 }

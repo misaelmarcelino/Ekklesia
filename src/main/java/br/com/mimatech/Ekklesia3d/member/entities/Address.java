@@ -1,4 +1,4 @@
-package br.com.mimatech.Ekklesia3d.entities;
+package br.com.mimatech.Ekklesia3d.member.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

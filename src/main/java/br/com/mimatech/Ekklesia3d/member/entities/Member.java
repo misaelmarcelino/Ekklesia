@@ -1,14 +1,18 @@
-package br.com.mimatech.Ekklesia3d.entities;
+package br.com.mimatech.Ekklesia3d.member.entities;
 
-import br.com.mimatech.Ekklesia3d.enums.Role;
+import br.com.mimatech.Ekklesia3d.shared.enums.Role;
+import br.com.mimatech.Ekklesia3d.shared.enums.AuthProvider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class Member implements UserDetails {
     private String email;
     @Column(length = 20)
     private String phone;
+
     private int age;
     private LocalDate dateOfBirth;
     private LocalDate dateOfBaptism;
@@ -44,15 +49,26 @@ public class Member implements UserDetails {
     @JoinColumn(name = "position_id", foreignKey = @ForeignKey(name = "fk_members_position"))
     private Position position;
 
-    @Column(nullable = false)
+    @Column()
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AuthProvider provider;
+
+    @Column(length = 255)
+    private String providerId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private Role role;
 
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @Override
     public boolean isAccountNonExpired() {
