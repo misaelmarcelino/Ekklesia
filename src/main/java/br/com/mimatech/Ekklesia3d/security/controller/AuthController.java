@@ -1,62 +1,150 @@
-package br.com.mimatech.Ekklesia3d.member.controller;
+package br.com.mimatech.Ekklesia3d.security.controller;
 
-import br.com.mimatech.Ekklesia3d.security.config.security.JwtService;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import br.com.mimatech.Ekklesia3d.member.dto.MemberDto;
+import br.com.mimatech.Ekklesia3d.member.dto.MemberRegisterDto;
+import br.com.mimatech.Ekklesia3d.member.entities.Member;
+import br.com.mimatech.Ekklesia3d.member.service.MemberService;
+import br.com.mimatech.Ekklesia3d.security.dto.LoginRequestDto;
+import br.com.mimatech.Ekklesia3d.security.dto.TokenResponseDto;
+import br.com.mimatech.Ekklesia3d.security.service.JwtService;
+import br.com.mimatech.Ekklesia3d.shared.enums.AuthProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticação", description = "Endpoints para registro e login de usuários")
 public class AuthController {
 
-    private final AuthenticationManager authManager; // Se usar, crie um @Bean AuthenticationManager
-    private final UserDetailsService userDetailsService;
-    private final JwtService jwt;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final MemberService memberService;
 
+    @Operation(
+            summary = "Login local",
+            description = "Autentica um usuário local com email e senha e retorna um JWT.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login bem sucedido",
+                            content = @Content(schema = @Schema(implementation = TokenResponseDto.class))),
+                    @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
+            }
+    )
+    @RequestBody(
+            description = "Credenciais de login",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = LoginRequestDto.class),
+                    examples = {
+                            @ExampleObject(
+                                    name = "Exemplo Login Local",
+                                    value = """
+                {
+                  "email": "misael@email.com",
+                  "password": "strongPassword123"
+                }
+                """
+                            )
+                    }
+            )
+    )
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginReq req) {
-        var authentication = new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword());
-        authManager.authenticate(authentication); // dispara 401 se inválido
+    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto request) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+        );
 
-        var user = userDetailsService.loadUserByUsername(req.getUsername());
-        var roles = user.getAuthorities().stream().map(a -> a.getAuthority()).toList();
-
-        var access = jwt.generateAccessToken(user.getUsername(), roles);
-        var refresh = jwt.generateRefreshToken(user.getUsername());
-
-        // Dica: salve o refresh (hash) no banco ou Redis para rotação/invalidação
-        return ResponseEntity.ok(new TokensRes(access, refresh));
+        if (auth.isAuthenticated()) {
+            String token = jwtService.generateToken((Member) auth.getPrincipal());
+            return ResponseEntity.ok(new TokenResponseDto(token));
+        } else {
+            throw new RuntimeException("Credenciais inválidas");
+        }
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody RefreshReq req) {
-        var decoded = jwt.verify(req.refreshToken);
-        var isRefresh = "refresh".equals(decoded.getClaim("type").asString());
-        if (!isRefresh) return ResponseEntity.status(400).body("Token não é refresh");
 
-        var username = decoded.getSubject();
-        var user = userDetailsService.loadUserByUsername(username);
-        List<String> roles = user.getAuthorities().stream().map(a -> a.getAuthority()).toList();
-
-        // (opcional forte) Rotação: invalida o refresh antigo e emite um novo
-        var access = jwt.generateAccessToken(username, roles);
-        var newRefresh = jwt.generateRefreshToken(username);
-
-        return ResponseEntity.ok(new TokensRes(access, newRefresh));
+    @Operation(
+            summary = "Registrar usuário local",
+            description = "Cria um novo usuário local no sistema com email e senha.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Usuário criado com sucesso",
+                            content = @Content(schema = @Schema(implementation = MemberDto.class))),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            }
+    )
+    @RequestBody(
+            description = "Dados para registro de membro local",
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = MemberRegisterDto.class),
+                    examples = {
+                            @ExampleObject(
+                                    name = "Exemplo Registro Local",
+                                    value = """
+                {
+                  "name": "Misael Souza Marcelino",
+                  "email": "misael@email.com",
+                  "phone": "+55 11 99999-9999",
+                  "age": 28,
+                  "dateOfBirth": "1997-05-15",
+                  "dateOfBaptism": "2015-09-01",
+                  "address": {
+                    "street": "Rua das Flores",
+                    "number": "123",
+                    "complement": "Apto 45",
+                    "city": "São Paulo",
+                    "state": "SP",
+                    "zipCode": "01000-000"
+                  },
+                  "position": {
+                    "position": "Diácono",
+                    "description": "Responsável por auxiliar no serviço da igreja"
+                  },
+                  "password": "strongPassword123",
+                  "role": "USER"
+                }
+                """
+                            )
+                    }
+            )
+    )
+    @PostMapping("/register")
+    public ResponseEntity<MemberDto> register(@RequestBody MemberRegisterDto dto){
+        MemberDto created = memberService.registerLocal(dto);
+        return ResponseEntity.ok(created);
     }
 
-    @Data
-    static class LoginReq { @NotBlank private String username; @NotBlank private String password; }
-    @Data
-    static class RefreshReq { @NotBlank String refreshToken; }
-    record TokensRes(String accessToken, String refreshToken) {}
+
+    @Operation(
+            summary = "Login ou registro via OAuth",
+            description = "Permite login/registro via Google, Facebook ou Apple.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login/registro social bem sucedido",
+                            content = @Content(schema = @Schema(implementation = MemberDto.class))),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            }
+    )
+
+    @PostMapping("/oauth")
+    public ResponseEntity<MemberDto> loginOAuth(
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String providerId,
+            @RequestParam AuthProvider provider) {
+
+        MemberDto member = memberService.registerOAuth(name, email, providerId, provider);
+        return ResponseEntity.ok(member);
+    }
+
 }
-
